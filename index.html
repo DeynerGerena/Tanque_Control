@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tanque · Sistema de Control</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<header class="navbar">
+    <div class="brand">
+        <div class="brand-logo">〜</div>
+        <div>
+            <strong>Tanque</strong>
+            <span>Sistema de Control</span>
+        </div>
+    </div>
+
+    <nav class="nav-tabs">
+        <button class="nav-btn active" data-view="caracterizacion">Caracterización del sensor</button>
+        <button class="nav-btn" data-view="control">Señal de control</button>
+        <button class="nav-btn" data-view="telemetria">Telemetría</button>
+        <button class="nav-btn" data-view="presentacion">Presentación</button>
+    </nav>
+
+    <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">Conectando…</span></div>
+</header>
+
+<main>
+
+<!-- ============ CARACTERIZACIÓN DEL SENSOR ============ -->
+<section class="view active" id="view-caracterizacion">
+
+    <div class="layout">
+
+        <!-- Columna izquierda: tanque -->
+        <aside class="card tank-card">
+            <h2>Nivel del tanque</h2>
+
+            <div class="tank-wrap">
+                <div class="tank-scale">
+                    <span>48</span><span>36</span><span>24</span><span>12</span><span>0</span>
+                </div>
+                <div class="tank">
+                    <div class="water" id="water"></div>
+                </div>
+            </div>
+
+            <div class="height-display"><span id="heightValue">0.0</span> cm</div>
+            <div class="percentage-display"><span id="percentageValue">0.0</span> %</div>
+        </aside>
+
+        <!-- Columna derecha -->
+        <div class="right-col">
+
+            <!-- Cards de datos -->
+            <div class="kpis">
+                <div class="card kpi">
+                    <div class="kpi-label">Voltaje medido</div>
+                    <div class="kpi-value"><span id="kVoltage">0.00</span> V</div>
+                    <div class="kpi-sub">Rango: 0 – 5 V</div>
+                </div>
+                <div class="card kpi">
+                    <div class="kpi-label">Altura calculada</div>
+                    <div class="kpi-value"><span id="kHeight">0.0</span> cm</div>
+                    <div class="kpi-sub">Rango: 0 – 50 cm</div>
+                </div>
+                <div class="card kpi">
+                    <div class="kpi-label">Referencia (setpoint)</div>
+                    <div class="kpi-value"><span id="kSetpoint">--</span> cm</div>
+                    <div class="kpi-sub" id="kError">Error: --</div>
+                </div>
+                <div class="card kpi">
+                    <div class="kpi-label">Voltaje original</div>
+                    <div class="kpi-value"><span id="kTemp">--</span> V</div>
+                    <div class="kpi-sub">Sin filtrar</div>
+                </div>
+            </div>
+
+            <!-- Gráfico central -->
+            <div class="card chart-card">
+                <div class="chart-head">
+                    <h2>Curva de caracterización</h2>
+                    <button class="btn" id="btnReset">Reiniciar</button>
+                </div>
+
+                <div class="chart-body">
+                    <div class="graph-container">
+                        <canvas id="characterizationChart"></canvas>
+                    </div>
+
+                    <div class="curve-data">
+                        <h3>Datos de la curva</h3>
+                        <dl>
+                            <dt>Voltaje mínimo</dt><dd>0.00 V</dd>
+                            <dt>Voltaje máximo</dt><dd>5.00 V</dd>
+                            <dt>Altura mínima</dt><dd>0 cm</dd>
+                            <dt>Altura máxima</dt><dd>50 cm</dd>
+                        </dl>
+                        <h3>Ecuación de la recta</h3>
+                        <p class="equation" id="equation">h = 10.17 · V + 3.725</p>
+                        <p class="hint">h: altura (cm) · V: voltaje (V)</p>
+                        <button class="btn primary" id="btnDownload">Descargar datos</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ============ OTRAS VISTAS (pendientes) ============ -->
+<section class="view" id="view-control"><div class="card placeholder">Señal de control — próximamente</div></section>
+<section class="view" id="view-telemetria"><div class="card placeholder">Telemetría — próximamente</div></section>
+<section class="view" id="view-presentacion">
+    <div class="card">
+        <div class="chart-head">
+            <h2>Presentación</h2>
+            <label class="btn" for="slideFiles">Agregar imágenes</label>
+            <input type="file" id="slideFiles" accept="image/*" multiple hidden>
+        </div>
+        <div class="slide-grid" id="slideGrid"></div>
+    </div>
+</section>
+
+</main>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
