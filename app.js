@@ -25,8 +25,8 @@ const MAX_HEIGHT = 50;    // cm (rango real del tanque)
 const H_MIN = 5;          // la línea empieza en 5 cm
 
 // Linealización calculada en el microcontrolador: h = SLOPE·V + OFFSET
-const SLOPE = 10.17;
-const OFFSET = -1.36;
+const SLOPE = 9.86;
+const OFFSET = -0.77;
 
 // Rango de voltaje mostrado en el eje X de la gráfica
 const V_AXIS_MIN = 0;
