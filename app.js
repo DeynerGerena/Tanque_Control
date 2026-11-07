@@ -5,11 +5,13 @@ import { firebaseConfig } from "./firebase-config.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 import { initPresentation } from "./presentation.js";
+import { initControl } from "./control.js";
 initPresentation();
 
 
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
+initControl(database);   // pestaña "Señal de control"
 
 // Se lee la raíz de la base. Estructura actual en Firebase:
 //   Voltaje: 2.73
