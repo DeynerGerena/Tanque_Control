@@ -4,8 +4,11 @@
 // (sin React, sin Tailwind, sin recharts, sin lucide: usa el Chart.js
 //  que ya carga index.html y el mismo Firebase de app.js)
 //
-//  Firebase:  tanque/live  → el puente (Python) escribe sensor + estado del PID
-//             tanque/cmd   → la web escribe comandos (sp, kp, ki, kd, modo, uManual)
+//  Firebase (todo en la raíz, junto a las variables que ya existían):
+//    Lee:     Altura, SetPoint, Control, PWM, Modo, Kp, Ki, Kd, Seguridad, ts
+//             (las escribe nodo_tanque.py a partir de lo que imprime el Arduino)
+//    Escribe: Comandos/{sp, kp, ki, kd, modo, uManual, ts}
+//             (nodo_tanque.py los reenvía al Arduino por serial)
 //
 //  Para ver la interfaz sin hardware: abre la página con  ?sim=1
 // =====================================================
@@ -15,8 +18,8 @@ export const H_MAX = 50;    // cm  (Hmax del Arduino)
 export const H_SEG = 47;    // cm  (corte de seguridad del Arduino)
 export const VALVE_V = 24;  // V   (alimentación de la bobina)
 
-const PATH_LIVE = "tanque/live";
-const PATH_CMD = "tanque/cmd";
+const PATH_LIVE = "/";            // la raíz, igual que app.js
+const PATH_CMD = "Comandos";
 const MAX_POINTS = 900;     // ~4.5 min a 0.3 s por muestra
 
 // ---------- Iconos (lucide, en SVG) ----------
@@ -466,9 +469,19 @@ export function initControl(database) {
 
     // ---- Datos reales: Firebase RTDB ----
     if (!MOCK) {
+        let lastTs = null;
         onValue(ref(database, PATH_LIVE), (snap) => {
             const d = snap.val();
-            if (d) push(d);
+            if (!d || d.Altura == null || d.Control == null) return;   // aún no hay datos del lazo PID
+            if (d.ts != null) {                // ignora cambios que no son telemetría (p. ej. un comando)
+                if (d.ts === lastTs) return;
+                lastTs = d.ts;
+            }
+            push({
+                h: Number(d.Altura), sp: Number(d.SetPoint), u: Number(d.Control), pwm: Number(d.PWM),
+                modo: Number(d.Modo), kp: Number(d.Kp), ki: Number(d.Ki), kd: Number(d.Kd),
+                seg: Number(d.Seguridad),
+            });
         });
     }
 
